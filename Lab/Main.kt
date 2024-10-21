@@ -1,40 +1,38 @@
 fun main() {
-    //U gradu Cifrogradu, postojala je lista brojeva nazvana nums koja je sadržavala
-    // cijele brojeve od 0 do n - 1. Svaki broj je trebao da se pojavi tačno jednom na listi,
-    // međutim, dva nestašna broja su se pojavila još jednom, čineći listu dužom nego obično.
-    //
-    //Kao detektiv grada, vaš zadatak je da pronađete ova dva nestašna broja.
-    //  Kao reyultat funkcije Vratite niz duzine dva koji sadrži ova dva broja nestasna
-    //  (u bilo kom redoslijedu), kako bi mir mogao da se vrati u Cifrograd.
+    //Dat je niz cijelih brojeva nums. Napisati fukciju koja ce zamijeniti svaki element u nums
+    // sa zbirom njegovih cifara.
+    // Funkcija treba da vrati najmanji element u nums nakon svih zamjena.
     // Constraints:
     // 1 <= nums.length <= 100
     //1 <= nums[i] < 1000
-    //Input: nums = [0,1,1,0]
-    //
-    //Output: [0,1]
-    //
-    //Input: nums = [0,3,2,1,3,2]
-    //
-    //Output: [2,3]
-    //
+    //Input: nums = [10,12,13,14]
+    //Output: 1
     //Explanation:
-    val nums = intArrayOf(0,1,1,0)
-    val nums1 = intArrayOf(0,3,2,1,3,2)
-    println(getSneakyNumbers(nums).joinToString())
-    println(getSneakyNumbers(nums1).joinToString())
+    //nums becomes [1, 3, 4, 5] after all replacements, with minimum element 1.
+    //Example 2:
+    //Input: nums = [999,19,199]
+    //Output: 10
+    //Explanation:
+    //nums becomes [27, 10, 19] after all replacements, with minimum element 10.
+
+    val nums = arrayOf(999,19,199)
+    val rez= minElement(nums)
+    println("Najmanja vrijednost u vektoru koji je nastao sabiranjem cifara: $rez")
 }
 
-fun getSneakyNumbers(nums: IntArray): IntArray {
-    val seen = mutableListOf<Int>()
-    val duplicates = mutableListOf<Int>()
+fun minElement(input: Array<Int>): Int {
+    val min = input.map { calculateSumOfDigits(it) }
+    return min.minOrNull() ?: 0
+}
 
-    for (num in nums) {
-        if (num in seen) {
-            duplicates.add(num)
-        } else {
-            seen.add(num)
-        }
+fun calculateSumOfDigits(value: Int): Int {
+    var num = value
+    var sumOfDigits = 0
+
+    while (num > 0) {
+        sumOfDigits += num % 10
+        num /= 10
     }
 
-    return duplicates.toIntArray()
+    return sumOfDigits
 }

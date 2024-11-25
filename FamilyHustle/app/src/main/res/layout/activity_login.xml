@@ -1,0 +1,113 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- Naslov aplikacije -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Family Hustle"
+            android:textSize="28sp"
+            android:fontFamily="@font/poppins_regular"
+            android:textStyle="bold"
+            android:textColor="#1E1E1E"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Podnaslov -->
+        <TextView
+            android:id="@+id/tvSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kreirajte račun\nUnesite svoj email i šifru"
+            android:textSize="16sp"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="#555555"
+            android:gravity="center"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Polje za unos emaila -->
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="email@domain.com"
+            android:inputType="textEmailAddress"
+            android:fontFamily="@font/poppins_regular"
+            android:background="@drawable/rounded_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Polje za unos lozinke -->
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:fontFamily="@font/poppins_regular"
+            android:background="@drawable/rounded_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Zaboravljena šifra -->
+        <TextView
+            android:id="@+id/tvForgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zaboravljena šifra?"
+            android:textSize="14sp"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="#1E90FF"
+            android:gravity="end"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="end" />
+
+        <!-- Dugme za prijavu -->
+        <Button
+            android:id="@+id/btnContinue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Prijavi se"
+            android:background="#6200EA"
+            android:textColor="#FFFFFF"
+            android:fontFamily="@font/poppins_regular"
+            android:padding="12dp"
+            android:textAllCaps="false"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Informativni tekst -->
+        <TextView
+            android:id="@+id/tvFooter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="By clicking continue, you agree to our Terms of Service and Privacy Policy"
+            android:textSize="12sp"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="#AAAAAA"
+            android:gravity="center"
+            android:layout_marginTop="10dp" />
+
+        <!-- Dugme za registraciju -->
+        <TextView
+            android:id="@+id/tvRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nemate račun? Registrujte se ovdje."
+            android:textSize="14sp"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="#1E90FF"
+            android:gravity="center"
+            android:layout_marginTop="20dp" />
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="icSettings" type="id" />
+    <item name="icHome" type="id" />
+    <item name="icTasks" type="id" />
+</resources>

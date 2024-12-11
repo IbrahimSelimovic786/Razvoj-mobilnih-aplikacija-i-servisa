@@ -3,56 +3,91 @@ package com.example.familyhustle
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import java.util.*
 
 class HomeActivity : AppCompatActivity() {
 
+    private val taskMap = mutableMapOf<String, MutableMap<Int, MutableList<Task>>>()
+
+    private lateinit var houseSpinner: Spinner
     private lateinit var rvWeekHistory: RecyclerView
     private lateinit var rvTasks: RecyclerView
     private lateinit var weekAdapter: WeekAdapter
     private lateinit var taskAdapter: TaskAdapter
     private val weekList = mutableListOf<Week>()
     private val taskList = mutableListOf<Task>()
-    private val taskMap = mutableMapOf<Int, MutableList<Task>>()
+    private var selectedHouse: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        // Navigacija na kalendar
-        findViewById<ImageView>(R.id.ic_calendar).setOnClickListener {
+        houseSpinner = findViewById(R.id.spinnerHouses)
+        rvWeekHistory = findViewById(R.id.rvWeekHistory)
+        rvTasks = findViewById(R.id.rvTasks)
+
+        findViewById<android.widget.ImageView>(R.id.ic_calendar).setOnClickListener {
             val intent = Intent(this, CreateTaskActivity::class.java)
+            intent.putExtra("selectedHouse", selectedHouse)
             startActivity(intent)
         }
 
-        rvWeekHistory = findViewById(R.id.rvWeekHistory)
         rvWeekHistory.layoutManager = LinearLayoutManager(this)
         weekAdapter = WeekAdapter(weekList) { week ->
             val weekIndex = weekList.indexOf(week) + 1
-            Log.d("HomeActivity", "Kliknuto na sedmicu: ${week.title}, indeks: $weekIndex")
-            showTasksForWeek(weekIndex)
+            showTasksForSelectedHouseAndWeek(selectedHouse, weekIndex)
         }
         rvWeekHistory.adapter = weekAdapter
 
-        rvTasks = findViewById(R.id.rvTasks)
         rvTasks.layoutManager = LinearLayoutManager(this)
         taskAdapter = TaskAdapter(taskList)
         rvTasks.adapter = taskAdapter
 
+        loadHouses()
         loadWeekHistory()
-        loadTasks()
+
+        houseSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                selectedHouse = houseSpinner.selectedItem.toString()
+                clearTasks() // Očisti taskove dok se ne klikne na sedmicu
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
     }
 
     override fun onResume() {
         super.onResume()
+        loadHouses()
         loadTasks()
+    }
+
+    private fun loadHouses() {
+        val sharedPref = getSharedPreferences("HousesPref", MODE_PRIVATE)
+        val houses = sharedPref.all.keys.toList()
+        if (houses.isNotEmpty()) {
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, houses)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            houseSpinner.adapter = adapter
+            selectedHouse = houses.firstOrNull()
+        } else {
+            selectedHouse = null
+            houseSpinner.adapter = null
+        }
     }
 
     private fun loadWeekHistory() {
@@ -65,50 +100,76 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun loadTasks() {
+        if (selectedHouse == null) return
+
         val sharedPref = getSharedPreferences("TasksPref", MODE_PRIVATE)
         val allTasks = sharedPref.all
 
         taskList.clear()
         taskMap.clear()
-        val calendar = Calendar.getInstance()
 
-        for ((_, value) in allTasks) {
+        allTasks.values.forEach { value ->
             val taskData = value.toString().split("|")
-            if (taskData.size < 4) {
-                Log.e("HomeActivity", "Neispravan format zadatka: $value")
-                continue
-            }
+            if (taskData.size >= 4) {
+                val title = taskData[0]
+                val points = taskData[1]
+                val deadline = taskData[2]
+                val houseName = taskData[3]
 
-            val title = taskData[0]
-            val points = taskData[1]
-            val deadline = taskData[2]
+                if (houseName != selectedHouse) return@forEach
 
-            val deadlineDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).parse(deadline)
-            if (deadlineDate != null) {
-                calendar.time = deadlineDate
-                val taskWeek = calendar.get(Calendar.WEEK_OF_MONTH)
+                val week = calculateWeek(deadline)
+                Log.d("HomeActivity", "Task '$title' za kuću '$houseName' pada u sedmicu $week.")
 
-                if (!taskMap.containsKey(taskWeek)) {
-                    taskMap[taskWeek] = mutableListOf()
+                if (week != -1) {
+                    taskMap.getOrPut(houseName) { mutableMapOf() }
+                        .getOrPut(week) { mutableListOf() }
+                        .add(Task(title, points, deadline))
                 }
-                taskMap[taskWeek]?.add(Task(title, points, deadline))
             }
         }
-
-        for ((week, tasks) in taskMap) {
-            Log.d("HomeActivity", "Sedmica $week: ${tasks.map { it.title }}")
-        }
-
-        val currentWeek = calendar.get(Calendar.WEEK_OF_MONTH)
-        showTasksForWeek(currentWeek)
     }
 
-    private fun showTasksForWeek(week: Int) {
-        Log.d("HomeActivity", "Prikaz zadataka za sedmicu: $week")
-        val tasksForSelectedWeek = taskMap[week] ?: mutableListOf()
+    private fun calculateWeek(dateString: String): Int {
+        val formatter = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.firstDayOfWeek = Calendar.MONDAY
+        calendar.minimalDaysInFirstWeek = 4 // ISO-8601 standard
+
+        return try {
+            val date = formatter.parse(dateString)
+            calendar.time = date
+
+            // Dohvatamo početak i kraj sedmice
+            val weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH)
+
+            // Vraćamo ispravan broj sedmice
+            weekOfMonth
+        } catch (e: Exception) {
+            Log.e("HomeActivity", "Greška prilikom parsiranja datuma: $dateString", e)
+            -1
+        }
+    }
+
+
+    private fun showTasksForSelectedHouseAndWeek(house: String?, week: Int) {
+        if (house == null) {
+            taskList.clear()
+            taskAdapter.notifyDataSetChanged()
+            Toast.makeText(this, "Odaberite kuću", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val tasksForWeek = taskMap[house]?.get(week) ?: mutableListOf()
+        Log.d("HomeActivity", "Prikaz zadataka za kuću '$house' i sedmicu $week: ${tasksForWeek.size} zadataka.")
 
         taskList.clear()
-        taskList.addAll(tasksForSelectedWeek)
+        taskList.addAll(tasksForWeek)
+        taskAdapter.notifyDataSetChanged()
+    }
+
+    private fun clearTasks() {
+        taskList.clear()
         taskAdapter.notifyDataSetChanged()
     }
 }

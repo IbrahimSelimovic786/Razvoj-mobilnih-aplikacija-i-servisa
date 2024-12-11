@@ -28,6 +28,14 @@
                 android:gravity="center" />
         </androidx.cardview.widget.CardView>
 
+        <!-- Spinner za kuće -->
+        <Spinner
+            android:id="@+id/spinnerHouse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:spinnerMode="dropdown" />
+
         <!-- Input Fields -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -117,17 +125,37 @@
                 android:textColor="#000000" />
         </LinearLayout>
 
-        <!-- Submit Button -->
-        <Button
-            android:id="@+id/btnCreateTask"
+        <!-- Buttons Section -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#6200EE"
-            android:text="Kreiraj Task"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:padding="12dp" />
+            android:orientation="vertical">
+
+            <!-- Submit Task Button -->
+            <Button
+                android:id="@+id/btnCreateTask"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#6200EE"
+                android:text="Kreiraj Task"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:padding="12dp" />
+
+            <!-- Create House Button -->
+            <Button
+                android:id="@+id/btnCreateHouse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#03A9F4"
+                android:text="Kreiraj Kuću"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:padding="12dp" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

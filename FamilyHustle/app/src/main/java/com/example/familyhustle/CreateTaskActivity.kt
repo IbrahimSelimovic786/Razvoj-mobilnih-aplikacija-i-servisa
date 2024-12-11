@@ -1,87 +1,105 @@
 package com.example.familyhustle
 
-import android.app.DatePickerDialog
-import android.content.SharedPreferences
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import java.util.*
 
 class CreateTaskActivity : AppCompatActivity() {
+
+    private lateinit var houseSpinner: Spinner
+    private lateinit var etTaskName: EditText
+    private lateinit var etTaskPoints: EditText
+    private lateinit var etTaskDate: EditText
+    private var selectedHouse: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_task)
 
-        val etTaskName = findViewById<EditText>(R.id.etTaskName)
-        val etTaskDate = findViewById<EditText>(R.id.etTaskDate)
-        val etTaskPoints = findViewById<EditText>(R.id.etTaskPoints)
-        val etTaskDescription = findViewById<EditText>(R.id.etTaskDescription)
-        val btnCreateTask = findViewById<Button>(R.id.btnCreateTask)
+        houseSpinner = findViewById(R.id.spinnerHouse)
+        etTaskName = findViewById(R.id.etTaskName)
+        etTaskPoints = findViewById(R.id.etTaskPoints)
+        etTaskDate = findViewById(R.id.etTaskDate)
 
-        // Date Picker za unos datuma
-        etTaskDate.setOnClickListener {
+        val btnSaveTask = findViewById<Button>(R.id.btnCreateTask)
+        val btnCreateHouse = findViewById<Button>(R.id.btnCreateHouse)
+
+        loadHouses()
+
+        houseSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                selectedHouse = houseSpinner.selectedItem.toString()
+            }
+
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
+        }
+
+        btnSaveTask.setOnClickListener {
+            saveTask()
+        }
+
+        btnCreateHouse.setOnClickListener {
+            val intent = Intent(this, CreateHouseActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadHouses()
+    }
+
+    private fun loadHouses() {
+        val sharedPref = getSharedPreferences("HousesPref", MODE_PRIVATE)
+        val houses = sharedPref.all.keys.toList()
+        if (houses.isNotEmpty()) {
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, houses)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            houseSpinner.adapter = adapter
+            selectedHouse = houses.firstOrNull()
+        } else {
+            selectedHouse = null
+            Toast.makeText(this, "Nema dostupnih kuća. Kreirajte kuću.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    private fun saveTask() {
+        val taskName = etTaskName.text.toString().trim()
+        val taskPoints = etTaskPoints.text.toString().trim()
+        val taskDate = etTaskDate.text.toString().trim()
+
+        if (taskName.isEmpty() || taskPoints.isEmpty() || taskDate.isEmpty() || selectedHouse == null) {
+            Toast.makeText(this, "Unesite sve podatke i odaberite kuću.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val sharedPref = getSharedPreferences("TasksPref", MODE_PRIVATE)
+        val editor = sharedPref.edit()
+
+        val taskWeek = try {
+            val deadlineDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).parse(taskDate)
             val calendar = Calendar.getInstance()
-            val datePicker = DatePickerDialog(
-                this,
-                { _, year, month, dayOfMonth ->
-                    val selectedDate = "$dayOfMonth-${month + 1}-$year"
-                    etTaskDate.setText(selectedDate)
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            )
-            datePicker.show()
+            calendar.time = deadlineDate
+            calendar.get(Calendar.WEEK_OF_MONTH)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Pogrešan format datuma. Koristite DD-MM-YYYY.", Toast.LENGTH_SHORT).show()
+            return
         }
 
-        // Kreiranje zadatka
-        btnCreateTask.setOnClickListener {
-            val taskName = etTaskName.text.toString().trim()
-            val taskDate = etTaskDate.text.toString().trim()
-            val taskPoints = etTaskPoints.text.toString().trim()
-            val taskDescription = etTaskDescription.text.toString().trim()
+        val taskKey = "$selectedHouse|$taskName|$taskPoints|$taskDate|$taskWeek"
+        editor.putString(taskKey, "$taskName|$taskPoints|$taskDate|$selectedHouse|$taskWeek")
+        editor.apply()
 
-            // Provera da li su polja popunjena
-            if (taskName.isEmpty() || taskDate.isEmpty() || taskPoints.isEmpty() || taskDescription.isEmpty()) {
-                Toast.makeText(this, "Popunite sva polja!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            // Provera datuma
-            val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-            val deadlineDate = try {
-                dateFormat.parse(taskDate)
-            } catch (e: Exception) {
-                Toast.makeText(this, "Neispravan format datuma!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            if (deadlineDate == null) {
-                Toast.makeText(this, "Neispravan datum!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            // Spremanje u SharedPreferences
-            try {
-                val sharedPref: SharedPreferences = getSharedPreferences("TasksPref", MODE_PRIVATE)
-                val editor = sharedPref.edit()
-
-                // Kreiranje jedinstvenog ključa za svaki zadatak
-                val taskKey = "task_${System.currentTimeMillis()}"
-                val taskData = "$taskName|$taskPoints|$taskDate|$taskDescription"
-                editor.putString(taskKey, taskData)
-                editor.apply()
-
-                Toast.makeText(this, "Zadatak uspešno kreiran!", Toast.LENGTH_SHORT).show()
-                finish() // Vraćanje na prethodnu aktivnost
-            } catch (e: Exception) {
-                Toast.makeText(this, "Došlo je do greške pri kreiranju zadatka.", Toast.LENGTH_SHORT).show()
-            }
-        }
+        Toast.makeText(this, "Task '$taskName' uspješno kreiran za kuću '$selectedHouse'.", Toast.LENGTH_SHORT).show()
+        finish()
     }
 }

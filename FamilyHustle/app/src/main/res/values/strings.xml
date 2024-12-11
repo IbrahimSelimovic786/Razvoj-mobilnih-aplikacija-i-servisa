@@ -1,3 +1,8 @@
+
 <resources>
-    <string name="app_name">FamilyHustle</string>
+<string name="app_name">FamilyHustle</string>
+<string-array name="roles_array">
+    <item>Ukucanin</item>
+    <item>Roditelj</item>
+</string-array>
 </resources>

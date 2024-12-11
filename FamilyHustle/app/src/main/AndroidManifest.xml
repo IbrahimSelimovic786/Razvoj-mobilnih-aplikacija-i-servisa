@@ -17,7 +17,11 @@
         <!-- Create Task Activity -->
         <activity
             android:name=".CreateTaskActivity"
-            android:exported="false" />
+            android:exported="true" />
+
+        <activity
+            android:name=".CreateHouseActivity"
+            android:exported="true" />
 
         <!-- Home Activity -->
         <activity

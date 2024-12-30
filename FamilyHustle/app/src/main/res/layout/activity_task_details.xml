@@ -1,0 +1,42 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvTaskTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Task Title"
+        android:textSize="20sp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvTaskDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Task Description"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnTakeBeforePhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Take Before Photo" />
+
+    <Button
+        android:id="@+id/btnTakeAfterPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Take After Photo"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnMarkAsComplete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mark as Complete"
+        android:layout_marginTop="16dp" />
+</LinearLayout>

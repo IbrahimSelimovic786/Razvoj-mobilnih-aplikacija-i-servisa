@@ -13,6 +13,7 @@
         android:theme="@style/Theme.FamilyHustle"
         tools:targetApi="31">
 
+        <activity android:name=".TaskDetailsActivity" />
 
         <!-- Create Task Activity -->
         <activity

@@ -1,37 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#FFFFFF"
-    android:elevation="2dp"
-    android:layout_marginBottom="8dp">
+    android:padding="8dp"
+    android:background="@android:color/white">
 
     <TextView
-        android:id="@+id/tvTaskTitle"
-        android:layout_width="wrap_content"
+        android:id="@+id/taskNameTextView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Task Title"
-        android:fontFamily="@font/poppins_regular"
+        android:text="Task Name"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginBottom="4dp" />
+        android:fontFamily="@font/poppins_regular"
+        android:textColor="@android:color/black"
+        android:padding="8dp" />
 
     <TextView
-        android:id="@+id/tvTaskPoints"
-        android:layout_width="wrap_content"
+        android:id="@+id/taskDueDateTextView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_regular"
-        android:text="50 points"
+        android:text="Due Date"
         android:textSize="14sp"
-        android:layout_marginBottom="4dp" />
-
-    <TextView
-        android:id="@+id/tvTaskDescription"
         android:fontFamily="@font/poppins_regular"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Description"
-        android:textSize="14sp" />
+        android:textColor="@android:color/darker_gray"
+        android:padding="8dp" />
 </LinearLayout>

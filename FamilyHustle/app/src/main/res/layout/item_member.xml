@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -6,17 +7,19 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/tvMemberEmail"
+        android:id="@+id/memberEmailTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Email"
-        android:textSize="16sp" />
+        android:text="Member Email"
+        android:textSize="16sp"
+        android:textColor="@android:color/black" />
 
     <TextView
-        android:id="@+id/tvMemberRole"
+        android:id="@+id/memberRoleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Uloga"
-        android:textSize="16sp" />
+        android:text="Role"
+        android:textSize="14sp"
+        android:textColor="@android:color/black" />
 </LinearLayout>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    tools:context=".TaskDetailActivity">
+
+    <!-- Naziv zadatka -->
+    <TextView
+        android:id="@+id/tvTaskName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Task Name"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/primary_dark"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:layout_marginHorizontal="16dp" />
+
+    <!-- Bodovi -->
+    <TextView
+        android:id="@+id/tvTaskPoints"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Points: 50"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/secondary_dark"
+        app:layout_constraintTop_toBottomOf="@id/tvTaskName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="8dp" />
+
+    <!-- Opis zadatka -->
+    <TextView
+        android:id="@+id/tvTaskDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Task Description"
+        android:textSize="16sp"
+        android:textColor="@color/primary_text"
+        app:layout_constraintTop_toBottomOf="@id/tvTaskPoints"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:layout_marginHorizontal="16dp" />
+
+    <!-- Datum zadatka -->
+    <TextView
+        android:id="@+id/tvTaskDueDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Due Date"
+        android:textSize="14sp"
+        android:textColor="@color/secondary_text"
+        app:layout_constraintTop_toBottomOf="@id/tvTaskDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="8dp" />
+
+    <!-- LinearLayout za dugmad -->
+    <LinearLayout
+        android:id="@+id/buttonGroup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/tvTaskDueDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
+
+        <!-- Dugme za slikanje -->
+        <Button
+            android:id="@+id/btnTakePhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take Photo"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Dugme za završetak zadatka -->
+        <Button
+            android:id="@+id/btnCompleteTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Complete Task"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Dugme za roditelja: Odobravanje -->
+        <Button
+            android:id="@+id/btnApproveTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Approve Task"
+            android:backgroundTint="@color/primary_color"
+            android:textColor="@android:color/white"
+            android:elevation="4dp"
+            android:padding="8dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/imgTaskPhoto"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp" />
+
+
+
+
+        <!-- Dugme za članove: Početak zadatka -->
+        <Button
+            android:id="@+id/btnDoTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Do Task"
+            android:backgroundTint="@color/primary_color"
+            android:textColor="@android:color/white"
+            android:elevation="4dp"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp" />
+
+
+        <!-- Dugme za pregled završenog zadatka -->
+        <Button
+            android:id="@+id/btnSeeDoneTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="See Done Task"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+    </LinearLayout>
+
+    <!-- Slika zadatka -->
+    <ImageView
+        android:id="@+id/imgTaskPhoto"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Task Photo"
+        app:layout_constraintTop_toBottomOf="@id/buttonGroup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!-- Navigacija -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/primary_light"
+        app:menu="@menu/bottom_navigation_menu"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/primary_color"
+        app:itemTextColor="@color/primary_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

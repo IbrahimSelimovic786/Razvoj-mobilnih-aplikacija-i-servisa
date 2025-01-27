@@ -1,135 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9F9F9"
     android:padding="16dp">
 
-    <!-- Naslov aplikacije -->
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/poppins_regular"
-        android:text="Family Hustle"
-        android:textColor="#3A3A3A"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Zaobljena slika profila -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardProfile"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:cardCornerRadius="25dp"
-        app:cardElevation="4dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp">
-
-        <ImageView
-            android:id="@+id/ivProfile"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/baba"
-            android:contentDescription="Profile Icon"
-            android:scaleType="centerCrop" />
-    </androidx.cardview.widget.CardView>
-
-    <!-- Spinner za izbor kuće -->
-    <Spinner
-        android:id="@+id/spinnerHouses"
-        android:layout_width="0dp"
-        android:hint="Odaberi kucu"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- RecyclerView za istoriju sedmica -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvWeekHistory"
-        android:layout_width="0dp"
-        android:layout_height="190dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_week_history"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@id/spinnerHouses"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- RecyclerView za zadatke -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTasks"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_tasks"
-        android:clipToPadding="false"
-        android:padding="8dp"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toTopOf="@id/navigationBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rvWeekHistory"
-        app:layout_constraintVertical_bias="0.475" />
-
-    <!-- Navigaciona traka na dnu -->
+    <!-- Gornji dio s naslovom i slikom -->
     <LinearLayout
-        android:id="@+id/navigationBar"
+        android:id="@+id/headerLayout"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="4"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageView
-            android:id="@+id/ic_home"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_home"
-            android:contentDescription="Home"
-            android:padding="8dp" />
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Family Hustle"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/poppins_bold"
+                android:textColor="@color/primary_text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Have a productive day!"
+                android:textSize="16sp"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="@color/hint_text" />
+        </LinearLayout>
 
         <ImageView
-            android:id="@+id/ic_calendar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_tasks"
-            android:padding="8dp" />
-
-        <ImageView
-            android:id="@+id/ic_awards"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_leaderboard"
-            android:padding="8dp" />
-
-        <ImageView
-            android:id="@+id/ic_settings"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_settings"
-            android:contentDescription="Settings"
-            android:padding="8dp" />
+            android:id="@+id/ivProfile"
+            android:layout_width="77dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="@drawable/input_background"
+            android:clipToOutline="true"
+            android:padding="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_profile" />
     </LinearLayout>
 
+    <!-- Tekst iznad Spinner-a -->
+    <TextView
+        android:id="@+id/tvChooseHouse"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Molimo odaberite kuću"
+        android:textSize="16sp"
+        android:textColor="@color/hint_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Spinner za kuće -->
+    <Spinner
+        android:id="@+id/spinnerHouse"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvChooseHouse" />
+
+    <!-- Tekst iznad RecyclerView za sedmice -->
+    <TextView
+        android:id="@+id/tvWeeksHint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Molimo kliknite na određenu sedmicu"
+        android:textSize="16sp"
+        android:textColor="@color/hint_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinnerHouse"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- RecyclerView za sedmice -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvWeeks"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/recycler_background"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvWeeksHint"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        />
+
+    <!-- Tekst iznad RecyclerView za zadatke -->
+
+    <!-- RecyclerView za zadatke -->
+    <TextView
+        android:id="@+id/tvTasksHint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Zadaci će se pojaviti kada kliknete na određenu sedmicu"
+        android:textColor="@color/hint_text"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvWeeks" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTasks"
+        android:layout_width="370dp"
+        android:layout_height="198dp"
+        android:background="@drawable/recycler_background"
+        android:padding="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTasksHint" />
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_navigation_menu"
+        android:background="@color/primary_light"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/primary_color"
+        app:itemTextColor="@color/primary_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

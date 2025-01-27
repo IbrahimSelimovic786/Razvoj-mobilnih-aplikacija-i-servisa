@@ -1,0 +1,16 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="#D0D8F5" /> <!-- Boja prilikom klika -->
+            <corners android:radius="8dp" />
+            <stroke android:width="2dp" android:color="#3B4B8C" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <solid android:color="#E3EAFD" /> <!-- Osnovna boja pozadine -->
+            <corners android:radius="8dp" />
+            <stroke android:width="2dp" android:color="#5A78E3" />
+        </shape>
+    </item>
+</selector>

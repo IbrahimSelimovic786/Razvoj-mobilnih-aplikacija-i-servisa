@@ -2,47 +2,77 @@ package com.example.familyhustle
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.familyhustle.databinding.ActivityRegisterBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class RegisterActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityRegisterBinding
+    private val auth = Firebase.auth
+    private val database = Firebase.database.reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.register_activity)
+        binding = ActivityRegisterBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val emailField = findViewById<EditText>(R.id.etRegisterEmail)
-        val passwordField = findViewById<EditText>(R.id.etRegisterPassword)
-        val registerButton = findViewById<Button>(R.id.btnRegister)
+        // Klik na dugme za registraciju
+        binding.btnRegister.setOnClickListener {
+            val email = binding.etEmail.text.toString()
+            val username = binding.etUsername.text.toString()
+            val password = binding.etPassword.text.toString()
+            val confirmPassword = binding.etConfirmPassword.text.toString()
 
-        registerButton.setOnClickListener {
-            val email = emailField.text.toString().trim()
-            val password = passwordField.text.toString().trim()
-
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                val sharedPref = getSharedPreferences("UserPref", MODE_PRIVATE)
-                val savedEmail = sharedPref.getString("email", null)
-
-                if (savedEmail == null) {
-                    val editor = sharedPref.edit()
-                    editor.putString("email", email)
-                    editor.putString("password", password)
-                    editor.apply()
-                    Log.d("RegisterActivity", "Korisnik uspješno registrovan: $email")
-                    Toast.makeText(this, "Registracija uspješna!", Toast.LENGTH_SHORT).show()
-
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
-                    finish()
+            if (email.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()) {
+                if (password == confirmPassword) {
+                    registerUser(email, username, password)
                 } else {
-                    Toast.makeText(this, "Korisnik već postoji", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(this, "Unesite email i šifru", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show()
             }
         }
+
+        // Klik na "Login here"
+        binding.tvLogin.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    private fun registerUser(email: String, username: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val userId = auth.currentUser?.uid
+                    val newUser = User(userId, username, email, "member")
+                    userId?.let {
+                        database.child("users").child(it).setValue(newUser)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show()
+                                startActivity(Intent(this, LoginActivity::class.java))
+                                finish()
+                            }
+                            .addOnFailureListener { error ->
+                                Toast.makeText(this, "Error saving user: ${error.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                } else {
+                    Toast.makeText(this, "Registration failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 }
+
+// User data class
+data class User(
+    val userId: String? = null,
+    val username: String = "",
+    val email: String = "",
+    val role: String = "member"
+)

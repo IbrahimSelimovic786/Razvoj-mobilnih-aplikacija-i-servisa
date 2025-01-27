@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:background="@color/background_color"
     android:padding="16dp">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Family Hustle"
-        android:textColor="@color/primary_text"
-        android:textSize="24sp"
-        android:fontFamily="@font/poppins_bold"
-        android:gravity="center"
-        android:layout_marginBottom="32dp" />
 
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
+        android:background="@drawable/input_background"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"
         android:background="@drawable/input_background"
         android:padding="12dp"
         android:layout_marginBottom="8dp" />
@@ -38,47 +34,23 @@
         android:padding="12dp"
         android:layout_marginBottom="8dp" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <EditText
+        android:id="@+id/etConfirmPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
-
-        <CheckBox
-            android:id="@+id/cbRememberMe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Zapamti me"
-            android:textColor="@color/primary_text"
-            android:fontFamily="@font/poppins_regular"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <TextView
-            android:id="@+id/tvForgotPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="92dp"
-            android:fontFamily="@font/poppins_regular"
-            android:text="Zaboravljena lozinka?"
-            android:textColor="@color/primary_color"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/cbRememberMe"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
+        android:hint="Confirm Password"
+        android:inputType="textPassword"
+        android:background="@drawable/input_background"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp" />
 
     <Button
-        android:id="@+id/btnContinue"
+        android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Continue"
+        android:text="Register"
         android:backgroundTint="@color/primary_button"
         android:textColor="@android:color/white"
-        android:fontFamily="@font/poppins_regular"
         android:layout_marginBottom="16dp" />
 
     <LinearLayout
@@ -90,16 +62,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nemate račun? "
+            android:text="Already have an account? "
             android:textColor="@color/secondary_text"
             android:textSize="14sp"
             android:fontFamily="@font/poppins_regular" />
 
         <TextView
-            android:id="@+id/tvRegister"
+            android:id="@+id/tvLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kreirajte ga"
+            android:text="Login here"
             android:textColor="@color/primary_color"
             android:textSize="14sp"
             android:fontFamily="@font/poppins_regular" />

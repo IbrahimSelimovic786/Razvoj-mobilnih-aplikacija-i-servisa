@@ -7,24 +7,27 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class WeekAdapter(
-    private val weeks: List<Week>,
-    private val onClick: (Week) -> Unit
+    private val weeks: List<String>,
+    private val onClick: (String) -> Unit
 ) : RecyclerView.Adapter<WeekAdapter.WeekViewHolder>() {
 
     inner class WeekViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvWeekTitle: TextView = itemView.findViewById(R.id.tvWeekTitle)
-        val tvWeekDates: TextView = itemView.findViewById(R.id.tvWeekDates)
+        val weekText: TextView = itemView.findViewById(R.id.weekTextView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeekViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_week_card, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_week, parent, false)
         return WeekViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: WeekViewHolder, position: Int) {
         val week = weeks[position]
-        holder.tvWeekTitle.text = week.title
-        holder.tvWeekDates.text = week.dates
+        holder.weekText.text = week
+
+        // Postavljanje pozadine za svaki element
+        holder.itemView.setBackgroundResource(R.drawable.recycler_item_selector)
+
+        // Postavljanje OnClickListener-a
         holder.itemView.setOnClickListener { onClick(week) }
     }
 

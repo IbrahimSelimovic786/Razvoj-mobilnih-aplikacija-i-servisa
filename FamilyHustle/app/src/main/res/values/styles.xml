@@ -1,0 +1,45 @@
+<resources>
+
+    <!-- Glavna tema aplikacije -->
+    <style name="Theme.AppName" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primarne boje -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+
+        <!-- Sekundarne boje -->
+        <item name="colorSecondary">@color/secondary_color</item>
+        <item name="colorSecondaryVariant">@color/secondary_dark</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+
+        <!-- Pozadinska boja -->
+        <item name="android:windowBackground">@color/background_color</item>
+
+        <!-- Status bar boja -->
+        <item name="android:statusBarColor">@color/primary_dark</item>
+    </style>
+
+
+
+    <!-- Stil za dugmad -->
+    <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:backgroundTint">@color/primary_color</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <!-- Stil za dugmad s obrubom -->
+    <style name="OutlinedButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/primary_color</item>
+        <item name="android:textColor">@color/primary_color</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <!-- Stil za polja unosa -->
+    <style name="InputFieldStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/primary_color</item>
+        <item name="hintTextColor">@color/primary_color</item>
+        <item name="android:textColor">@color/primary_text</item>
+    </style>
+
+</resources>

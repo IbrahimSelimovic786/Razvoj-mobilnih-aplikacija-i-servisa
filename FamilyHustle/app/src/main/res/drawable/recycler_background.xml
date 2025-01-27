@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#E3EAFD" /> <!-- Svijetlo plava unutrašnjost -->
+    <corners android:radius="12dp" /> <!-- Zaobljeni uglovi -->
+    <stroke android:width="2dp" android:color="#5A78E3" /> <!-- Tamniji okvir -->
+</shape>

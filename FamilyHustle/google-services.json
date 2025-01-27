@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "708101495730",
+    "project_id": "familyhustle-e05c0",
+    "storage_bucket": "familyhustle-e05c0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:708101495730:android:25cf90e23b753c792722ab",
+        "android_client_info": {
+          "package_name": "com.example.familyhustle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZ2MlYdZb4i3PlEi-zBc3CKlzj4yDN7Y8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

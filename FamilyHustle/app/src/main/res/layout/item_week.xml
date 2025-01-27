@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/weekTextView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:padding="16dp"
+    android:text="Week X"
+    android:textSize="18sp"
+    android:textStyle="bold"
+    android:background="@drawable/recycler_item_selector"
+    android:textColor="@color/primary_text" />

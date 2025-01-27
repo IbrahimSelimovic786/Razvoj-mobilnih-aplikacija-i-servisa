@@ -1,0 +1,21 @@
+{
+    "houses": {
+      "-N1XyZABCD123": {
+        "name": "House 1"
+      },
+      "-N1XyZABCD124": {
+        "name": "House 2"
+      }
+    },
+    "tasks": {
+      "-N1XyZABCD125": {
+        "id": "-N1XyZABCD125",
+        "name": "Task 1",
+        "description": "This is the first task",
+        "dueDate": "2025-01-20",
+        "houseName": "House 1",
+        "weekNumber": 1
+      }
+    }
+  }
+  

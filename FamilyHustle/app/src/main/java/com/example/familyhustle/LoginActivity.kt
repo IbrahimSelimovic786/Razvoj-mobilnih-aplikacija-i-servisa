@@ -1,50 +1,104 @@
 package com.example.familyhustle
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.familyhustle.databinding.ActivityLoginBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityLoginBinding
+    private lateinit var sharedPreferences: SharedPreferences
+    private val auth = Firebase.auth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val emailField = findViewById<EditText>(R.id.etEmail)
-        val passwordField = findViewById<EditText>(R.id.etPassword)
-        val loginButton = findViewById<Button>(R.id.btnContinue)
-        val registerText = findViewById<TextView>(R.id.tvRegister)
+        // Inicijalizacija SharedPreferences
+        sharedPreferences = getSharedPreferences("FamilyHustlePrefs", MODE_PRIVATE)
 
-        loginButton.setOnClickListener {
-            val email = emailField.text.toString().trim()
-            val password = passwordField.text.toString().trim()
-
-            val sharedPref = getSharedPreferences("UserPref", MODE_PRIVATE)
-            val savedEmail = sharedPref.getString("email", null)
-            val savedPassword = sharedPref.getString("password", null)
-
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                if (email == savedEmail && password == savedPassword) {
-                    Log.d("LoginActivity", "Uspješna prijava: $email")
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    Toast.makeText(this, "Neispravan email ili šifra", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(this, "Unesite email i šifru", Toast.LENGTH_SHORT).show()
+        // Provjera da li je korisnik označio "Remember Me"
+        val isRemembered = sharedPreferences.getBoolean("rememberMe", false)
+        if (isRemembered) {
+            val email = sharedPreferences.getString("email", null)
+            val password = sharedPreferences.getString("password", null)
+            if (!email.isNullOrEmpty() && !password.isNullOrEmpty()) {
+                autoLogin(email, password)
             }
         }
 
-        registerText.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
+        // Klik na dugme "Continue"
+        binding.btnContinue.setOnClickListener {
+            val email = binding.etEmail.text.toString()
+            val password = binding.etPassword.text.toString()
+            val rememberMe = binding.cbRememberMe.isChecked
+
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Spremi korisničke podatke ako je "Remember Me" označen
+                            if (rememberMe) {
+                                saveCredentials(email, password)
+                            } else {
+                                clearCredentials()
+                            }
+                            startActivity(Intent(this, HomeActivity::class.java))
+                            finish()
+                        } else {
+                            Toast.makeText(
+                                this,
+                                "Login failed: ${task.exception?.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+            } else {
+                Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show()
+            }
         }
+
+        binding.tvRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+            finish()
+        }
+    }
+
+    // Automatska prijava
+    private fun autoLogin(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    finish()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Auto login failed: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+    }
+
+    // Spremanje korisničkih podataka
+    private fun saveCredentials(email: String, password: String) {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("rememberMe", true)
+        editor.putString("email", email)
+        editor.putString("password", password)
+        editor.apply()
+    }
+
+    // Brisanje korisničkih podataka
+    private fun clearCredentials() {
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
     }
 }

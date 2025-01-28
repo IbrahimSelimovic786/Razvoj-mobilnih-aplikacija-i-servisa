@@ -110,6 +110,7 @@
     <!-- Tekst iznad RecyclerView za zadatke -->
 
     <!-- RecyclerView za zadatke -->
+
     <TextView
         android:id="@+id/tvTasksHint"
         android:layout_width="0dp"
@@ -123,18 +124,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rvWeeks" />
 
+    <!-- Bottom Navigation -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTasks"
-        android:layout_width="370dp"
-        android:layout_height="198dp"
+        android:layout_width="359dp"
+        android:layout_height="157dp"
         android:background="@drawable/recycler_background"
         android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTasksHint" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTasksHint"
+        app:layout_constraintVertical_bias="0.25" />
 
-    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"

@@ -2,6 +2,8 @@ package com.example.familyhustle
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,30 +14,8 @@ import com.google.firebase.database.*
 class CreateTaskActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCreateTaskBinding
     private lateinit var database: DatabaseReference
-    private val houseList = mutableListOf<String>()
     private val houseMap = mutableMapOf<String, String>()
-
-    private fun getUserRoleInHouse(houseId: String, userEmail: String, callback: (String) -> Unit) {
-        val encodedEmail = encodeEmail(userEmail) // Kodirajte email ako koristite email kao ključ
-        val houseRef = FirebaseDatabase.getInstance().getReference("houses")
-            .child(houseId)
-            .child("members")
-            .child(encodedEmail)
-
-        houseRef.get().addOnSuccessListener { snapshot ->
-            val role = snapshot.getValue(String::class.java) ?: "Member"
-            callback(role)
-        }.addOnFailureListener {
-            callback("Member")
-        }
-    }
-
-
-    private fun encodeEmail(email: String): String {
-        return email.replace(".", "_")
-    }
-
-
+    private var userRole: String = "Member" // Zadana vrijednost
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,43 +26,41 @@ class CreateTaskActivity : AppCompatActivity() {
 
         loadHouses()
 
-        binding.btnSaveTask.setOnClickListener {
-            val selectedHouseName = binding.spinnerHouse.selectedItem.toString()
-            val selectedHouseId = houseMap[selectedHouseName] // Dobijamo houseId iz mape
+        binding.spinnerHouse.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedHouseName = binding.spinnerHouse.selectedItem.toString()
+                val selectedHouseId = houseMap[selectedHouseName]
+                if (selectedHouseId != null) {
+                    verifyUserMembership(selectedHouseId) // Nova funkcija za provjeru članstva
+                }
+            }
 
-            if (selectedHouseId == null) {
-                Toast.makeText(this, "House ID not found!", Toast.LENGTH_SHORT).show()
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        binding.btnSaveTask.setOnClickListener {
+            if (userRole != "Parent") {
+                Toast.makeText(this, "Only parents can create tasks!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            getUserRoleInHouse(selectedHouseId, FirebaseAuth.getInstance().currentUser?.email ?: "") { role ->
-                if (role != "Parent") {
-                    Toast.makeText(this, "Only parents can create tasks!", Toast.LENGTH_SHORT).show()
-                    return@getUserRoleInHouse
-                }
+            val selectedHouseId = houseMap[binding.spinnerHouse.selectedItem.toString()]
+            if (selectedHouseId == null) {
+                Toast.makeText(this, "Please select a house!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-                val taskName = binding.etTaskName.text.toString()
-                val dueDate = getDueDate() // Kombinovanje unosa za godinu, mjesec i dan
-                val taskDescription = binding.etTaskDescription.text.toString()
+            val taskName = binding.etTaskName.text.toString()
+            val dueDate = getDueDate()
+            val taskDescription = binding.etTaskDescription.text.toString()
+            val taskPoints = binding.etTaskPoints.text.toString().toIntOrNull()
 
-                if (taskName.isNotEmpty() && dueDate.isNotEmpty() && taskDescription.isNotEmpty()) {
-                    val weekNumber = getWeekNumber(dueDate)
-                    if (weekNumber == null) {
-                        Toast.makeText(this, "Invalid date. Please ensure it's a valid date in yyyy-MM-dd format.", Toast.LENGTH_SHORT).show()
-                    } else {
-                        saveTaskToDatabase(selectedHouseId, taskName, taskDescription, dueDate, weekNumber)
-                    }
-                } else {
-                    Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show()
-                }
+            if (taskName.isNotEmpty() && dueDate.isNotEmpty() && taskDescription.isNotEmpty() && taskPoints != null && taskPoints > 0) {
+                saveTaskToDatabase(selectedHouseId, taskName, taskDescription, dueDate, taskPoints)
+            } else {
+                Toast.makeText(this, "Please fill in all fields correctly!", Toast.LENGTH_SHORT).show()
             }
         }
-
-
-
-
-
-
 
         binding.btnCreateHouse.setOnClickListener {
             startActivity(Intent(this, CreateHouseActivity::class.java))
@@ -91,19 +69,93 @@ class CreateTaskActivity : AppCompatActivity() {
         setupBottomNavigation()
     }
 
+    private fun verifyUserMembership(houseId: String) {
+        val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
+        if (currentUserEmail.isNullOrEmpty()) {
+            Toast.makeText(this, "User not logged in!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val encodedEmail = encodeEmail(currentUserEmail)
+        val membersRef = database.child("houses").child(houseId).child("members")
+
+        membersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!snapshot.exists()) {
+                    Toast.makeText(this@CreateTaskActivity, "House members not found.", Toast.LENGTH_SHORT).show()
+                    binding.btnSaveTask.isEnabled = false
+                    return
+                }
+
+                // Dohvati sve članove kuće
+                val membersMap = snapshot.value as? Map<String, String>
+                println("DEBUG: Members map = $membersMap")
+                println("DEBUG: Encoded email = $encodedEmail")
+
+                if (membersMap != null && membersMap.containsKey(encodedEmail)) {
+                    userRole = membersMap[encodedEmail] ?: "Member"
+                    println("DEBUG: User role = $userRole") // Log za debug
+
+                    if (userRole == "Parent") {
+                        enableTaskCreation()
+                    } else {
+                        Toast.makeText(this@CreateTaskActivity, "You do not have permission to create tasks.", Toast.LENGTH_SHORT).show()
+                        binding.btnSaveTask.isEnabled = false
+                    }
+                } else {
+                    // Ako e-mail nije pronađen
+                    println("DEBUG: User $encodedEmail not found in members map")
+                    Toast.makeText(this@CreateTaskActivity, "Your account is not part of this house.", Toast.LENGTH_SHORT).show()
+                    binding.btnSaveTask.isEnabled = false
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@CreateTaskActivity, "Failed to load members: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun encodeEmail(email: String): String {
+        return email.replace(".", "_").lowercase() // Zamjena tačke s donjom crtom i mala slova
+    }
+
+
+
+    private fun enableTaskCreation() {
+        binding.btnSaveTask.isEnabled = true // Omogućuje dugme
+        Toast.makeText(this, "You have permission to create tasks!", Toast.LENGTH_SHORT).show()
+    }
+
     private fun loadHouses() {
-        val houseRef = FirebaseDatabase.getInstance().getReference("houses")
-        houseRef.addValueEventListener(object : ValueEventListener {
+        val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
+        if (currentUserEmail.isNullOrEmpty()) {
+            Toast.makeText(this, "User not logged in!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val encodedEmail = encodeEmail(currentUserEmail)
+        val houseRef = database.child("houses")
+
+        houseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val houseNames = mutableListOf<String>()
                 houseMap.clear()
 
                 for (houseSnapshot in snapshot.children) {
                     val houseId = houseSnapshot.key ?: continue
-                    val houseName = houseSnapshot.child("name").getValue(String::class.java) ?: continue
+                    val members = houseSnapshot.child("members")
 
-                    houseNames.add(houseName)
-                    houseMap[houseName] = houseId // Spremamo naziv kuće i houseId
+                    // Provjera da li je korisnik član kuće
+                    if (members.hasChild(encodedEmail)) {
+                        val houseName = houseSnapshot.child("name").getValue(String::class.java) ?: continue
+                        houseNames.add(houseName)
+                        houseMap[houseName] = houseId
+                    }
+                }
+
+                if (houseNames.isEmpty()) {
+                    Toast.makeText(this@CreateTaskActivity, "No houses found for your account.", Toast.LENGTH_SHORT).show()
                 }
 
                 val adapter = ArrayAdapter(this@CreateTaskActivity, android.R.layout.simple_spinner_item, houseNames)
@@ -117,47 +169,39 @@ class CreateTaskActivity : AppCompatActivity() {
         })
     }
 
+
+    private fun saveTaskToDatabase(houseId: String, taskName: String, description: String, dueDate: String, points: Int) {
+        val taskRef = database.child("tasks").push()
+        val task = TaskData(
+            id = taskRef.key ?: "",
+            name = taskName,
+            description = description,
+            dueDate = dueDate,
+            houseName = houseId,
+            weekNumber = getWeekNumber(dueDate) ?: 0,
+            completed = false,
+            points = points
+        )
+        taskRef.setValue(task)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Task created successfully!", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .addOnFailureListener { error ->
+                Toast.makeText(this, "Failed to create task: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
     private fun getDueDate(): String {
         val year = binding.etYear.text.toString()
-        val month = binding.etMonth.text.toString().padStart(2, '0') // Dodaje '0' ako je jednocifreno
+        val month = binding.etMonth.text.toString().padStart(2, '0')
         val day = binding.etDay.text.toString().padStart(2, '0')
-
         return if (year.isNotEmpty() && month.isNotEmpty() && day.isNotEmpty()) {
             "$year-$month-$day"
         } else {
             ""
         }
     }
-    private fun saveTaskToDatabase(houseName: String, taskName: String, description: String, dueDate: String, weekNumber: Int) {
-        val taskRef = database.child("tasks").push()
-
-        // Provjera unosa bodova
-        val taskPoints = binding.etTaskPoints.text.toString().toIntOrNull()
-        if (taskPoints == null || taskPoints <= 0) {
-            Toast.makeText(this, "Please enter valid points for the task!", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val task = TaskData(
-            id = taskRef.key ?: "",
-            name = taskName,
-            description = description,
-            dueDate = dueDate,
-            houseName = houseName,
-            weekNumber = weekNumber,
-            completed = false,
-            points = taskPoints // Dodavanje unesenih bodova
-        )
-        taskRef.setValue(task)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Task created successfully with $taskPoints points!", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-            .addOnFailureListener { error ->
-                Toast.makeText(this, "Error saving task: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
 
     private fun getWeekNumber(date: String): Int? {
         return try {
@@ -182,12 +226,8 @@ class CreateTaskActivity : AppCompatActivity() {
                     startActivity(Intent(this, HomeActivity::class.java))
                     true
                 }
-                R.id.nav_tasks -> {
-                    // Navigacija na CreateTaskActivity
-                    true
-                }
+                R.id.nav_tasks -> true
                 R.id.nav_settings -> {
-                    // Navigacija na SettingsActivity
                     startActivity(Intent(this, SettingsActivity::class.java))
                     true
                 }
@@ -199,4 +239,5 @@ class CreateTaskActivity : AppCompatActivity() {
             }
         }
     }
+
 }

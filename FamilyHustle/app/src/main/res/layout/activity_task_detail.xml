@@ -142,14 +142,14 @@
     <!-- Slika zadatka -->
     <ImageView
         android:id="@+id/imgTaskPhoto"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
+        android:layout_width="402dp"
+        android:layout_height="337dp"
+        android:layout_marginTop="16dp"
         android:contentDescription="Task Photo"
-        app:layout_constraintTop_toBottomOf="@id/buttonGroup"
-        app:layout_constraintStart_toStartOf="parent"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonGroup" />
 
     <!-- Navigacija -->
     <com.google.android.material.bottomnavigation.BottomNavigationView

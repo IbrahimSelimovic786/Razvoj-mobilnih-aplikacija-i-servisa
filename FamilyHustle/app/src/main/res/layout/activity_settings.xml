@@ -24,7 +24,6 @@
         android:id="@+id/etUsername"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Unesite korisničko ime"
         android:inputType="text"
         android:background="@drawable/input_background"
         android:padding="12dp"
@@ -61,20 +60,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
-
-    <!-- Dugme za resetiranje lozinke -->
-    <Button
-        android:id="@+id/btnResetPassword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Resetuj lozinku"
-        android:backgroundTint="@color/primary_button"
-        android:textColor="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/btnChangeProfilePicture"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
-
 
     <!-- Dugme za odjavu -->
     <Button

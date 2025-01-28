@@ -47,20 +47,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
 
-        binding.btnResetPassword.setOnClickListener {
-            val email = FirebaseAuth.getInstance().currentUser?.email
-            if (!email.isNullOrEmpty()) {
-                FirebaseAuth.getInstance().sendPasswordResetEmail(email)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Reset password email sent to $email", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener { error ->
-                        Toast.makeText(this, "Failed to send reset email: ${error.message}", Toast.LENGTH_SHORT).show()
-                    }
-            } else {
-                Toast.makeText(this, "No email associated with this account.", Toast.LENGTH_SHORT).show()
-            }
-        }
+
 
     }
 

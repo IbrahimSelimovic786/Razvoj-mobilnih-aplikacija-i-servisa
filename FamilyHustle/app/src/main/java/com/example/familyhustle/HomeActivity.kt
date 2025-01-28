@@ -104,21 +104,39 @@ class HomeActivity : AppCompatActivity() {
             Toast.makeText(this, "Failed to load profile picture: ${error.message}", Toast.LENGTH_SHORT).show()
         }
     }
-
+    private fun encodeEmail(email: String): String {
+        return email.replace(".", "_").lowercase() // Zamjena tačke s donjom crtom i mala slova
+    }
 
     private fun loadHouses() {
+        val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
+        if (currentUserEmail.isNullOrEmpty()) {
+            Toast.makeText(this, "User not logged in!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val encodedEmail = encodeEmail(currentUserEmail)
         val houseRef = database.child("houses")
-        houseRef.addValueEventListener(object : ValueEventListener {
+
+        houseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 houses.clear()
                 houseMap.clear()
 
                 for (houseSnapshot in snapshot.children) {
                     val houseId = houseSnapshot.key ?: continue
-                    val houseName = houseSnapshot.child("name").getValue(String::class.java) ?: continue
+                    val members = houseSnapshot.child("members")
 
-                    houses.add(houseName)
-                    houseMap[houseName] = houseId
+                    // Dodaj samo kuće gdje trenutni korisnik postoji u members čvoru
+                    if (members.hasChild(encodedEmail)) {
+                        val houseName = houseSnapshot.child("name").getValue(String::class.java) ?: continue
+                        houses.add(houseName)
+                        houseMap[houseName] = houseId
+                    }
+                }
+
+                if (houses.isEmpty()) {
+                    Toast.makeText(this@HomeActivity, "No houses found for your account.", Toast.LENGTH_SHORT).show()
                 }
 
                 (binding.spinnerHouse.adapter as ArrayAdapter<*>).notifyDataSetChanged()
@@ -129,6 +147,7 @@ class HomeActivity : AppCompatActivity() {
             }
         })
     }
+
 
     private fun loadAllTasks() {
         val taskRef = database.child("tasks")

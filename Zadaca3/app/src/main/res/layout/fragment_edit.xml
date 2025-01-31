@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Polje za naslov zabilješke -->
+    <EditText
+        android:id="@+id/editTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Naslov zabilješke"
+        android:maxLines="1" />
+
+    <!-- Polje za tekst zabilješke -->
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="556dp"
+        android:gravity="top"
+        android:hint="Tekst zabilješke"
+        android:scrollbars="vertical" />
+
+    <!-- Dugme za spremanje zabilješke -->
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:padding="8dp"
+        android:text="Sačuvaj" />
+
+    <!-- Dugme za brisanje zabilješke -->
+    <ImageView
+        android:id="@+id/deleteIcon"
+        android:layout_width="90dp"
+        android:layout_height="45dp"
+        android:layout_gravity="end"
+        android:padding="8dp"
+        android:src="@drawable/ic_delete" />
+
+</LinearLayout>

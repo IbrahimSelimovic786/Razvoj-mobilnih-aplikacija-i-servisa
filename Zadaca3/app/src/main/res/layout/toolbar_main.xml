@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="?attr/colorPrimary"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    android:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+    <!-- Sličica sa lijeve strane -->
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/baba"
+        android:layout_marginStart="16dp"
+        android:layout_gravity="center_vertical" />
+
+    <!-- Naslov u centru -->
+    <TextView
+        android:id="@+id/appTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Šta sve trebam?"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center" />
+
+    <!-- Info ikona sa desne strane -->
+    <ImageView
+        android:id="@+id/infoIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_settings"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="16dp" />
+</androidx.appcompat.widget.Toolbar>

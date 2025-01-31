@@ -1,0 +1,23 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Pozadinska slika -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/background"
+        android:scaleType="centerCrop" />
+
+    <!-- Informacije o aplikaciji -->
+    <TextView
+        android:id="@+id/aboutInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Šta sve trebam?\nIbrahim Selimovic\nCopyright © 2024\nVerzija 1.0"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_centerInParent="true" />
+</RelativeLayout>
